@@ -311,6 +311,8 @@ static LassoServer *am_get_lasso_server(request_rec *r)
 {
     am_dir_cfg_rec *cfg = am_get_dir_cfg(r);
 
+    am_diag_printf(r, "entering am_get_lasso_server\n");
+
     cfg = cfg->inherit_server_from;
 
     apr_thread_mutex_lock(cfg->server_mutex);
@@ -373,10 +375,12 @@ static LassoServer *am_get_lasso_server(request_rec *r)
 	    return NULL;
 	}
 
+        am_diag_printf(r, "am_get_lasso_server before set signature_method\n");
         cfg->server->signature_method = CFG_VALUE(cfg, signature_method);
     }
 
     apr_thread_mutex_unlock(cfg->server_mutex);
+    am_diag_printf(r, "am_get_lasso_server leaving function ok\n");
 
     return cfg->server;
 }
@@ -3694,6 +3698,11 @@ int am_handler(request_rec *r)
 #endif /* HAVE_ECP */
     const char *endpoint;
 
+#ifdef ENABLE_DIAGNOSTICS
+  /* am_diag_printf(r, "enter function %s\n", __func__); */
+    AM_LOG_RERROR(APLOG_MARK, APLOG_INFO, 0, r, "enter function %s\n", __func__);
+#endif
+
     /*
      * Normally this content handler is used to dispatch to the SAML
      * endpoints implmented by mod_auth_mellon. SAML endpoint dispatch
@@ -3712,6 +3721,7 @@ int am_handler(request_rec *r)
 
 #ifdef HAVE_ECP
     if (req_cfg->ecp_authn_req) { /* Are we doing ECP? */
+        AM_LOG_RERROR(APLOG_MARK, APLOG_INFO, 0, r, "am_handler - ecp_auth_req detected.\n");
         return am_send_paos_authn_request(r);
     }
 #endif /* HAVE_ECP */
@@ -3720,10 +3730,20 @@ int am_handler(request_rec *r)
      * the uri starts with the path set with the MellonEndpointPath
      * configuration directive.
      */
+#ifdef ENABLE_DIAGNOSTICS
+  /* am_diag_printf(r, "enter function %s\n", __func__); */
+    AM_LOG_RERROR(APLOG_MARK, APLOG_INFO, 0, r, "am_handler - checking url:  %s\n", r->uri);
+    AM_LOG_RERROR(APLOG_MARK, APLOG_INFO, 0, r, "am_handler - endpoint_path:  %s\n", cfg->endpoint_path);
+#endif
     if(strstr(r->uri, cfg->endpoint_path) != r->uri)
         return DECLINED;
 
     endpoint = &r->uri[strlen(cfg->endpoint_path)];
+#ifdef ENABLE_DIAGNOSTICS
+  /* am_diag_printf(r, "enter function %s\n", __func__); */
+    AM_LOG_RERROR(APLOG_MARK, APLOG_INFO, 0, r, "am_handler - called endpoint:  %s\n", endpoint);
+#endif
+    /* am_diag_printf(r, "am_handler - called endpoint:  %s\n", endpoint); */
     if (!strcmp(endpoint, "metadata")) {
         return am_handle_metadata(r);
     } else if (!strcmp(endpoint, "repost")) {
