@@ -2051,11 +2051,7 @@ void *auth_mellon_dir_merge(apr_pool_t *p, void *base, void *add)
          add_cfg->dump_saml_response :
          base_cfg->dump_saml_response);
 
-    new_cfg->endpoint_path = (
-        add_cfg->endpoint_path != default_endpoint_path ?
-        add_cfg->endpoint_path :
-        base_cfg->endpoint_path
-        );
+    new_cfg->endpoint_path = (add_cfg->endpoint_path);
 
     new_cfg->session_length = (add_cfg->session_length != -1 ?
                                add_cfg->session_length :
