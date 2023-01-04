@@ -3452,6 +3452,7 @@ static int am_handle_login(request_rec *r)
         return ret;
     }
 
+    am_diag_printf(r, "validate_redirect_url %s\n", __func__);
     ret = am_validate_redirect_url(r, return_to);
     if(ret != OK) {
         AM_LOG_RERROR(APLOG_MARK, APLOG_ERR, 0, r,
@@ -3743,7 +3744,7 @@ int am_handler(request_rec *r)
   /* am_diag_printf(r, "enter function %s\n", __func__); */
     AM_LOG_RERROR(APLOG_MARK, APLOG_INFO, 0, r, "am_handler - called endpoint:  %s\n", endpoint);
 #endif
-    /* am_diag_printf(r, "am_handler - called endpoint:  %s\n", endpoint); */
+    am_diag_printf(r, "am_handler - called endpoint:  %s\n", endpoint);
     if (!strcmp(endpoint, "metadata")) {
         return am_handle_metadata(r);
     } else if (!strcmp(endpoint, "repost")) {
