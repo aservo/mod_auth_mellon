@@ -28,7 +28,7 @@ APLOG_USE_MODULE(auth_mellon);
 /* This is the default endpoint path. Remember to update the description of
  * the MellonEndpointPath configuration directive if you change this.
  */
-static const char *default_endpoint_path = "/mellon/";
+static const char *default_endpoint_path = "/saml/";
 
 /* This is the default name of the attribute we use as a username. Remember
  * to update the description of the MellonUser configuration directive if
