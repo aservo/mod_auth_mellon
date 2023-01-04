@@ -2138,14 +2138,9 @@ void *auth_mellon_dir_merge(apr_pool_t *p, void *base, void *add)
                             add_cfg->probe_discovery_idp : 
                             base_cfg->probe_discovery_idp);
 
-
-    if (cfg_can_inherit_lasso_server(add_cfg)) {
-        new_cfg->inherit_server_from = base_cfg->inherit_server_from;
-    } else {
-        apr_thread_mutex_create(&new_cfg->server_mutex,
-                                APR_THREAD_MUTEX_DEFAULT, p);
-        new_cfg->inherit_server_from = new_cfg;
-    }
+    apr_thread_mutex_create(&new_cfg->server_mutex,
+                            APR_THREAD_MUTEX_DEFAULT, p);
+    new_cfg->inherit_server_from = new_cfg;
 
     new_cfg->server = NULL;
 
